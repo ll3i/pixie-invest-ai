@@ -1,0 +1,119 @@
+{
+  "total_count": 84,
+  "sentiment_distribution": {
+    "긍정": 32,
+    "부정": 15,
+    "중립": 37
+  },
+  "average_sentiment_score": 0.104,
+  "strong_positive_count": 22,
+  "strong_negative_count": 13,
+  "top_positive_news": [
+    {
+      "title": "오리온이엔씨, '원전 해체 시장' 겨냥…건조·감용 설비 설계·제작 경쟁력 강화",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "급증",
+        "성장",
+        "성장",
+        "수익"
+      ]
+    },
+    {
+      "title": "\"지속되는 실적 성장\"...한화에어로스페이스, 목표가↑-LS",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "상승",
+        "증가",
+        "상향",
+        "성장",
+        "성장"
+      ]
+    },
+    {
+      "title": "삼성운용 'KODEX AI전력 ETF 2종' 순자산 1조원 돌파",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "늘어",
+        "성장",
+        "성장",
+        "돌파",
+        "투자"
+      ]
+    },
+    {
+      "title": "PLUS 고배당주, 주당 분배금 6.5% 인상…\"올 들어 두 번째\"",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "증가",
+        "매수",
+        "수익",
+        "투자"
+      ]
+    },
+    {
+      "title": "'SOL 팔란티어커버드콜OTM채권혼합' 주당 240원 월배당 지급 \"커버드콜 ETF 중 최대\"",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "급증",
+        "상승",
+        "유입",
+        "수익",
+        "안정"
+      ]
+    }
+  ],
+  "top_negative_news": [
+    {
+      "title": "더블유씨피, 2Q 영업손실 260억…적자전환",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "적자",
+        "적자",
+        "적자",
+        "손실",
+        "손실"
+      ]
+    },
+    {
+      "title": "코스피·코스닥, 3%대↓…'증시 활성화' 역행 세제 개편안에 실망매물 출회",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "매도",
+        "하락",
+        "하락",
+        "하락"
+      ]
+    },
+    {
+      "title": "“외환·금융위기 때 보다 심각”…상반기 시멘트 내수 판매, 33년 만에 최저 추락",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "침체",
+        "위기",
+        "위기"
+      ]
+    },
+    {
+      "title": "LG생활건강, 화장품 사업 적자에 6%대 급락[특징주]",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "적자",
+        "적자",
+        "부진",
+        "급락",
+        "급락"
+      ]
+    },
+    {
+      "title": "'증시 살린다더니'...세제개편안 발표에 지주사株 급락[특징주]",
+      "sentiment_score": -0.92,
+      "negative_keywords": [
+        "하락",
+        "하락",
+        "급락"
+      ]
+    }
+  ],
+  "market_signal": "매수 신호"
+}

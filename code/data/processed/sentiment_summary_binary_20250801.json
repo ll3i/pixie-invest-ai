@@ -1,0 +1,122 @@
+{
+  "total_count": 84,
+  "sentiment_distribution": {
+    "긍정": 66,
+    "부정": 18
+  },
+  "average_sentiment_score": 0.179,
+  "strong_positive_count": 20,
+  "strong_negative_count": 7,
+  "top_positive_news": [
+    {
+      "title": "딥마인드, 가상자산거래소 인수 본격화 \"SPC 설립 및 TF 구성 완료\"",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "확대",
+        "완료",
+        "완료",
+        "인수",
+        "인수"
+      ]
+    },
+    {
+      "title": "삼성운용 'KODEX AI전력 ETF 2종' 순자산 1조원 돌파",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "늘어",
+        "성장",
+        "성장",
+        "돌파",
+        "투자"
+      ]
+    },
+    {
+      "title": "대한조선, 코스피 상장 첫날 급등세...하반기 IPO 대어 [특징주]",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "급등",
+        "강세",
+        "IPO",
+        "IPO"
+      ]
+    },
+    {
+      "title": "씨큐브 “GNMI, 머크 'SuSo' 사업부 인수 완료...3사 통합 시너지 본격화”",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "성공",
+        "완료",
+        "완료",
+        "인수",
+        "인수"
+      ]
+    },
+    {
+      "title": "PLUS 고배당주, 주당 분배금 6.5% 인상…\"올 들어 두 번째\"",
+      "sentiment_score": 1.0,
+      "positive_keywords": [
+        "매수",
+        "수익",
+        "배당",
+        "배당",
+        "배당"
+      ]
+    }
+  ],
+  "top_negative_news": [
+    {
+      "title": "트러스톤운용, '태광산업 EB 발행 금지' 2차 가처분 신청",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "중단",
+        "중단",
+        "중단",
+        "소송"
+      ]
+    },
+    {
+      "title": "더블유씨피, 2Q 영업손실 260억…적자전환",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "적자",
+        "적자",
+        "적자",
+        "손실",
+        "손실"
+      ]
+    },
+    {
+      "title": "코스피·코스닥, 3%대↓…'증시 활성화' 역행 세제 개편안에 실망매물 출회",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "매도",
+        "하락",
+        "하락",
+        "하락"
+      ]
+    },
+    {
+      "title": "“외환·금융위기 때 보다 심각”…상반기 시멘트 내수 판매, 33년 만에 최저 추락",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "침체",
+        "위기",
+        "위기"
+      ]
+    },
+    {
+      "title": "LG생활건강, 화장품 사업 적자에 6%대 급락[특징주]",
+      "sentiment_score": -1.0,
+      "negative_keywords": [
+        "적자",
+        "적자",
+        "부진",
+        "급락",
+        "급락"
+      ]
+    }
+  ],
+  "positive_ratio": 0.786,
+  "negative_ratio": 0.214,
+  "market_signal": "강한 매수 신호"
+}

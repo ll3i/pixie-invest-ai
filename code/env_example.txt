@@ -1,0 +1,32 @@
+# MINERVA 투자챗봇 환경 설정
+# 이 파일을 .env로 복사하고 실제 값으로 수정하세요
+
+# API 설정
+OPENAI_API_KEY=your_openai_api_key_here
+CLOVA_API_KEY=your_clova_api_key_here
+CLOVA_API_HOST=https://api.clovastudio.com
+CLOVA_REQUEST_ID=your_request_id_here
+
+# Flask 설정
+FLASK_SECRET_KEY=minerva_investment_advisor_secure_key_2024_for_production_use_longer_key
+FLASK_ENV=development
+FLASK_DEBUG=True
+HOST=127.0.0.1
+PORT=5000
+
+# 데이터베이스 설정 (Supabase)
+SUPABASE_URL=your_supabase_url_here
+SUPABASE_KEY=your_supabase_anon_key_here
+
+# API 제한 설정
+API_MAX_RETRIES=3
+API_RETRY_DELAY=1
+
+# 데이터 수집 설정
+DATA_UPDATE_ENABLED=True
+DATA_UPDATE_INTERVAL_HOURS=24
+NEWS_UPDATE_INTERVAL_HOURS=6
+
+# 로깅 설정
+LOG_LEVEL=INFO
+LOG_FILE_PATH=logs/minerva.log 
