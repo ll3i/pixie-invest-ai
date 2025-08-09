@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뉴스/이슈 - Pixie AI 투자 어드바이저</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-primary-dark: #0B3DCF;
+            --pixie-secondary: #5E97F4;
+            --pixie-dark: #2F2E41;
+            --pixie-dark-light: #3F3D56;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-green: #22C55E;
+            --pixie-red: #EF4444;
+            --pixie-yellow: #F59E0B;
+            --pixie-text-muted: #8F8F8F;
+            --pixie-gradient: linear-gradient(90deg, #5E97F4 0%, #3B7AFF 100%);
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+            --pixie-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--pixie-black);
+            background: var(--pixie-light-gray);
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        .pixie-navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 20px 134px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .pixie-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-menu {
+            display: flex;
+            gap: 60px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pixie-nav-item {
+            text-align: center;
+            color: var(--pixie-black);
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .pixie-nav-item:hover,
+        .pixie-nav-item.active {
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pixie-btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .pixie-btn-primary {
+            background: var(--pixie-gradient);
+            color: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        /* 메인 컨테이너 */
+        .pixie-main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .pixie-page-header {
+            text-align: center;
+            margin-bottom: 48px;
+            background: var(--pixie-white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-page-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 16px;
+        }
+
+        .pixie-page-subtitle {
+            font-size: 20px;
+            color: var(--pixie-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 필터 섹션 */
+        .pixie-filter-section {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-filter-tabs {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .pixie-filter-tab {
+            padding: 12px 24px;
+            border: 2px solid #e5e5e5;
+            border-radius: 25px;
+            background: var(--pixie-white);
+            color: var(--pixie-gray);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .pixie-filter-tab.active,
+        .pixie-filter-tab:hover {
+            border-color: var(--pixie-primary);
+            background: var(--pixie-primary);
+            color: var(--pixie-white);
+            transform: translateY(-1px);
+        }
+
+        /* 뉴스 카드 */
+        .pixie-news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .pixie-news-card {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--pixie-shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pixie-news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        .pixie-news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .pixie-news-card.positive::before {
+            background: linear-gradient(90deg, var(--pixie-green), #16a34a);
+        }
+
+        .pixie-news-card.negative::before {
+            background: linear-gradient(90deg, var(--pixie-red), #dc2626);
+        }
+
+        .pixie-news-card.neutral::before {
+            background: linear-gradient(90deg, var(--pixie-yellow), #d97706);
+        }
+
+        .pixie-news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .pixie-news-category {
+            background: var(--pixie-light-gray);
+            color: var(--pixie-gray);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pixie-news-sentiment {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pixie-news-sentiment.positive {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--pixie-green);
+        }
+
+        .pixie-news-sentiment.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--pixie-red);
+        }
+
+        .pixie-news-sentiment.neutral {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--pixie-yellow);
+        }
+
+        .pixie-news-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .pixie-news-summary {
+            color: var(--pixie-gray);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .pixie-news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--pixie-text-muted);
+        }
+
+        .pixie-news-source {
+            font-weight: 600;
+        }
+
+        .pixie-news-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 시장 개요 섹션 */
+        .pixie-market-overview {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-market-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .pixie-market-stat {
+            text-align: center;
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--pixie-light-gray);
+        }
+
+        .pixie-market-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pixie-market-stat-label {
+            color: var(--pixie-gray);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .pixie-navbar {
+                padding: 20px;
+            }
+
+            .pixie-nav-menu {
+                display: none;
+            }
+
+            .pixie-page-title {
+                font-size: 32px;
+            }
+
+            .pixie-main-container {
+                padding: 20px 15px;
+            }
+
+            .pixie-news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pixie-filter-tabs {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="pixie-navbar">
+        <div class="pixie-nav-content">
+            <a href="index.html" class="pixie-logo">
+                Pixie
+            </a>
+            <ul class="pixie-nav-menu">
+                <li><a href="survey.html" class="pixie-nav-item">투자 설문</a></li>
+                <li><a href="learning.html" class="pixie-nav-item">투자 학습</a></li>
+                <li><a href="chatbot.html" class="pixie-nav-item">AI 챗봇</a></li>
+                <li><a href="stock.html" class="pixie-nav-item">주가 예측</a></li>
+                <li><a href="news.html" class="pixie-nav-item active">뉴스/이슈</a></li>
+                <li><a href="my-invest.html" class="pixie-nav-item">MY 투자</a></li>
+            </ul>
+            <div class="pixie-nav-icons">
+                <a href="dashboard.html" class="pixie-btn pixie-btn-primary">대시보드</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <div class="pixie-main-container">
+        <!-- 페이지 헤더 -->
+        <div class="pixie-page-header">
+            <h1 class="pixie-page-title">📰 뉴스 & 시장 이슈</h1>
+            <p class="pixie-page-subtitle">
+                AI 감정 분석을 통한 실시간 뉴스 모니터링과<br>
+                시장에 영향을 미치는 주요 이슈들을 한눈에 확인하세요
+            </p>
+        </div>
+
+        <!-- 시장 개요 -->
+        <div class="pixie-market-overview">
+            <h3 style="color: var(--pixie-black); font-weight: 700; margin-bottom: 24px; text-align: center;">
+                <i class="fas fa-chart-line me-2"></i>실시간 시장 분위기
+            </h3>
+            <div class="pixie-market-stats">
+                <div class="pixie-market-stat">
+                    <div class="pixie-market-stat-value" style="color: var(--pixie-green);">67%</div>
+                    <div class="pixie-market-stat-label">긍정적 뉴스</div>
+                </div>
+                <div class="pixie-market-stat">
+                    <div class="pixie-market-stat-value" style="color: var(--pixie-red);">21%</div>
+                    <div class="pixie-market-stat-label">부정적 뉴스</div>
+                </div>
+                <div class="pixie-market-stat">
+                    <div class="pixie-market-stat-value" style="color: var(--pixie-yellow);">12%</div>
+                    <div class="pixie-market-stat-label">중립적 뉴스</div>
+                </div>
+                <div class="pixie-market-stat">
+                    <div class="pixie-market-stat-value" style="color: var(--pixie-primary);">324</div>
+                    <div class="pixie-market-stat-label">오늘의 뉴스</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 필터 섹션 -->
+        <div class="pixie-filter-section">
+            <h4 style="color: var(--pixie-black); font-weight: 600; margin-bottom: 20px;">카테고리별 뉴스</h4>
+            <div class="pixie-filter-tabs">
+                <button class="pixie-filter-tab active" data-category="all">전체</button>
+                <button class="pixie-filter-tab" data-category="stock">개별 종목</button>
+                <button class="pixie-filter-tab" data-category="market">시장 전반</button>
+                <button class="pixie-filter-tab" data-category="economy">경제 정책</button>
+                <button class="pixie-filter-tab" data-category="global">글로벌</button>
+                <button class="pixie-filter-tab" data-category="tech">기술/IT</button>
+                <button class="pixie-filter-tab" data-category="finance">금융</button>
+            </div>
+        </div>
+
+        <!-- 뉴스 그리드 -->
+        <div class="pixie-news-grid" id="news-grid">
+            <!-- 뉴스 카드들이 여기에 동적으로 추가됩니다 -->
+        </div>
+
+        <!-- 더보기 버튼 -->
+        <div class="text-center mt-5">
+            <button id="load-more" class="pixie-btn pixie-btn-primary" style="padding: 16px 40px;">
+                <i class="fas fa-plus me-2"></i>더 많은 뉴스 보기
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 샘플 뉴스 데이터
+        const newsData = [
+            {
+                id: 1,
+                title: "삼성전자, 3분기 실적 깜짝 성장... 반도체 회복세 본격화",
+                summary: "삼성전자가 3분기 연결 기준 매출 67조원, 영업이익 10.44조원을 기록하며 전년 동기 대비 크게 증가했다고 발표했습니다.",
+                category: "stock",
+                sentiment: "positive",
+                source: "한국경제",
+                time: "2시간 전",
+                image: "issue1.png"
+            },
+            {
+                id: 2,
+                title: "美 금리 인하 시사... 국내 증시에 호재 전망",
+                summary: "연준이 향후 금리 인하 가능성을 시사하면서 국내 증시에 긍정적 영향을 미칠 것으로 전망됩니다.",
+                category: "global",
+                sentiment: "positive",
+                source: "매일경제",
+                time: "3시간 전",
+                image: "issue2.png"
+            },
+            {
+                id: 3,
+                title: "원자재 가격 급등으로 인한 인플레이션 우려 확산",
+                summary: "국제 원자재 가격이 급등하면서 글로벌 인플레이션 압력이 높아지고 있어 투자심리에 부정적 영향을 미치고 있습니다.",
+                category: "economy",
+                sentiment: "negative",
+                source: "서울경제",
+                time: "4시간 전",
+                image: "issue3.png"
+            },
+            {
+                id: 4,
+                title: "네이버·카카오, AI 서비스 경쟁 본격화",
+                summary: "국내 대형 IT 기업들이 생성형 AI 서비스 개발에 본격 나서면서 관련 주가에 긍정적 영향을 미치고 있습니다.",
+                category: "tech",
+                sentiment: "positive",
+                source: "디지털타임스",
+                time: "5시간 전",
+                image: "issue4.png"
+            },
+            {
+                id: 5,
+                title: "부동산 규제 완화 정책 발표... 건설주 강세",
+                summary: "정부가 부동산 규제 완화 정책을 발표하면서 건설업체 주가가 일제히 상승세를 보이고 있습니다.",
+                category: "market",
+                sentiment: "positive",
+                source: "파이낸셜뉴스",
+                time: "6시간 전",
+                image: null
+            },
+            {
+                id: 6,
+                title: "중국 경제 성장률 둔화... 수출기업 영향 우려",
+                summary: "중국의 경제 성장률이 예상보다 둔화되면서 대중국 수출 의존도가 높은 국내 기업들에 대한 우려가 커지고 있습니다.",
+                category: "global",
+                sentiment: "negative",
+                source: "아시아경제",
+                time: "7시간 전",
+                image: null
+            },
+            {
+                id: 7,
+                title: "바이오 신약 개발 성공... 관련주 급등",
+                summary: "국내 바이오 기업이 신약 개발에 성공했다고 발표하면서 바이오 관련주들이 일제히 강세를 보이고 있습니다.",
+                category: "stock",
+                sentiment: "positive",
+                source: "메디컬투데이",
+                time: "8시간 전",
+                image: null
+            },
+            {
+                id: 8,
+                title: "ESG 투자 열풍... 지속가능경영 기업에 관심 집중",
+                summary: "ESG 투자가 글로벌 트렌드로 자리잡으면서 지속가능경영을 실천하는 기업들에 대한 관심이 높아지고 있습니다.",
+                category: "market",
+                sentiment: "neutral",
+                source: "이투데이",
+                time: "9시간 전",
+                image: null
+            }
+        ];
+
+        let currentCategory = 'all';
+        let displayCount = 6;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayNews();
+            setupFilterTabs();
+            setupLoadMore();
+        });
+
+        function displayNews() {
+            const filteredNews = currentCategory === 'all' ? 
+                newsData : newsData.filter(news => news.category === currentCategory);
+            
+            const newsGrid = document.getElementById('news-grid');
+            const newsToShow = filteredNews.slice(0, displayCount);
+            
+            newsGrid.innerHTML = newsToShow.map(news => createNewsCard(news)).join('');
+            
+            // 더보기 버튼 표시/숨김
+            const loadMoreBtn = document.getElementById('load-more');
+            if (filteredNews.length <= displayCount) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+        function createNewsCard(news) {
+            const sentimentIcon = {
+                'positive': '📈',
+                'negative': '📉',
+                'neutral': '➡️'
+            };
+
+            const sentimentText = {
+                'positive': '긍정',
+                'negative': '부정',
+                'neutral': '중립'
+            };
+
+            const categoryText = {
+                'stock': '개별종목',
+                'market': '시장전반',
+                'economy': '경제정책',
+                'global': '글로벌',
+                'tech': '기술/IT',
+                'finance': '금융'
+            };
+
+            return `
+                <div class="pixie-news-card ${news.sentiment}" onclick="openNewsDetail(${news.id})">
+                    <div class="pixie-news-header">
+                        <span class="pixie-news-category">${categoryText[news.category]}</span>
+                        <span class="pixie-news-sentiment ${news.sentiment}">
+                            ${sentimentIcon[news.sentiment]} ${sentimentText[news.sentiment]}
+                        </span>
+                    </div>
+                    <h3 class="pixie-news-title">${news.title}</h3>
+                    <p class="pixie-news-summary">${news.summary}</p>
+                    <div class="pixie-news-footer">
+                        <span class="pixie-news-source">${news.source}</span>
+                        <span class="pixie-news-time">
+                            <i class="fas fa-clock"></i>
+                            ${news.time}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupFilterTabs() {
+            const filterTabs = document.querySelectorAll('.pixie-filter-tab');
+            
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 활성 탭 변경
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 카테고리 변경 및 뉴스 다시 표시
+                    currentCategory = this.dataset.category;
+                    displayCount = 6; // 카테고리 변경시 다시 6개로 리셋
+                    displayNews();
+                });
+            });
+        }
+
+        function setupLoadMore() {
+            document.getElementById('load-more').addEventListener('click', function() {
+                displayCount += 6;
+                displayNews();
+            });
+        }
+
+        function openNewsDetail(newsId) {
+            const news = newsData.find(n => n.id === newsId);
+            if (news) {
+                // 실제로는 뉴스 상세 페이지로 이동하거나 모달을 표시
+                alert(`뉴스 상세보기\n\n제목: ${news.title}\n\n내용: ${news.summary}\n\n출처: ${news.source}`);
+            }
+        }
+
+        // 실시간 업데이트 시뮬레이션
+        setInterval(() => {
+            // 시장 통계 업데이트
+            const stats = document.querySelectorAll('.pixie-market-stat-value');
+            stats.forEach(stat => {
+                const currentValue = parseInt(stat.textContent);
+                const change = Math.random() > 0.5 ? 1 : -1;
+                const newValue = Math.max(0, currentValue + change);
+                
+                if (stat.textContent.includes('%')) {
+                    stat.textContent = newValue + '%';
+                } else {
+                    stat.textContent = newValue.toString();
+                }
+            });
+        }, 30000); // 30초마다 업데이트
+    </script>
+</body>
+</html>

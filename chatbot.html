@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixie - AI 챗봇</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-secondary: #5E97F4;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .nav-link {
+            color: var(--pixie-gray);
+            font-weight: 500;
+            margin: 0 1rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--pixie-primary);
+        }
+
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 76px);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .chat-sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .chat-main {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--pixie-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .chat-info h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .chat-info p {
+            margin: 0;
+            color: var(--pixie-gray);
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message.bot .message-avatar {
+            background: var(--pixie-secondary);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: var(--pixie-gray);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+        }
+
+        .message-bubble {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.25rem;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .message.user .message-bubble {
+            background: var(--pixie-primary);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--pixie-gray);
+        }
+
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--pixie-primary);
+        }
+
+        .chat-send-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--pixie-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send-btn:hover {
+            background: var(--pixie-primary-dark);
+        }
+
+        .quick-actions {
+            margin-top: 2rem;
+        }
+
+        .quick-actions h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .quick-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--pixie-light-gray);
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: var(--pixie-primary);
+            color: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 1rem;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--pixie-gray);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Pixie</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">대시보드</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="survey.html">투자 설문</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="learning.html">투자 학습</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="chatbot.html">AI 챗봇</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="stock.html">주가 예측</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">뉴스/이슈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-invest.html">MY 투자</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 챗봇 컨테이너 -->
+    <div class="chat-container">
+        <!-- 사이드바 -->
+        <div class="chat-sidebar">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 1rem;">AI 투자 도우미</h3>
+            <p style="font-size: 14px; color: var(--pixie-gray); margin-bottom: 2rem;">
+                24시간 언제든지 투자 관련 질문을 해보세요. AI가 실시간으로 답변해드립니다.
+            </p>
+            
+            <div class="quick-actions">
+                <h4>빠른 질문</h4>
+                <button class="quick-btn" onclick="sendQuickMessage('오늘 주식시장 상황이 어때요?')">
+                    오늘 시장 상황
+                </button>
+                <button class="quick-btn" onclick="sendQuickMessage('삼성전자 투자 전망은 어떤가요?')">
+                    삼성전자 전망
+                </button>
+                <button class="quick-btn" onclick="sendQuickMessage('초보자에게 추천하는 투자 방법은?')">
+                    초보자 가이드
+                </button>
+                <button class="quick-btn" onclick="sendQuickMessage('포트폴리오 리밸런싱은 언제 해야 하나요?')">
+                    포트폴리오 관리
+                </button>
+            </div>
+        </div>
+
+        <!-- 메인 챗 영역 -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chat-info">
+                    <h3>Pixie AI</h3>
+                    <p>온라인 • 즉시 응답 가능</p>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- 초기 메시지 -->
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            안녕하세요! 저는 Pixie AI 투자 도우미입니다. 👋<br><br>
+                            투자에 관한 궁금한 점이 있으시면 무엇이든 물어보세요.<br>
+                            주식 분석, 포트폴리오 관리, 시장 동향 등 다양한 주제로 도움을 드릴 수 있습니다.
+                        </div>
+                        <div class="message-time">오전 10:00</div>
+                    </div>
+                </div>
+
+                <!-- 타이핑 인디케이터 -->
+                <div class="message bot typing-indicator" id="typingIndicator">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <form class="chat-input-form" onsubmit="sendMessage(event)">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="메시지를 입력하세요..." autocomplete="off">
+                    <button type="submit" class="chat-send-btn">
+                        <i class="fas fa-paper-plane"></i> 전송
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // 메시지 전송
+        function sendMessage(event) {
+            event.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // 사용자 메시지 추가
+            addMessage(message, 'user');
+            chatInput.value = '';
+
+            // 타이핑 인디케이터 표시
+            showTypingIndicator();
+
+            // AI 응답 시뮬레이션
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateAIResponse(message);
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+
+        // 빠른 질문 전송
+        function sendQuickMessage(message) {
+            chatInput.value = message;
+            sendMessage(new Event('submit'));
+        }
+
+        // 메시지 추가
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-${sender === 'bot' ? 'robot' : 'user'}"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">${text}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 타이핑 인디케이터 표시/숨김
+        function showTypingIndicator() {
+            typingIndicator.classList.add('active');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.remove('active');
+        }
+
+        // AI 응답 생성 (시뮬레이션)
+        function generateAIResponse(message) {
+            const responses = {
+                '시장': '현재 코스피는 2,500선을 유지하고 있으며, 외국인 순매수세가 이어지고 있습니다. 반도체와 2차전지 섹터가 강세를 보이고 있어 긍정적인 시장 분위기입니다.',
+                '삼성전자': '삼성전자는 AI 반도체 수요 증가와 메모리 가격 반등으로 실적 개선이 예상됩니다. 중장기 투자 관점에서 긍정적으로 평가됩니다.',
+                '초보자': '초보자분들께는 ETF로 시작하시는 것을 추천드립니다. KODEX 200과 같은 지수 추종 ETF로 시장 전체에 분산 투자하면서 경험을 쌓아보세요.',
+                '포트폴리오': '일반적으로 분기별로 리밸런싱을 검토하시고, 목표 비중에서 5% 이상 벗어났을 때 조정하시는 것이 좋습니다.',
+                'default': '좋은 질문입니다! 투자 결정은 개인의 상황과 목표에 따라 달라질 수 있습니다. 더 구체적인 정보를 알려주시면 맞춤형 조언을 드릴 수 있습니다.'
+            };
+
+            for (const key in responses) {
+                if (message.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

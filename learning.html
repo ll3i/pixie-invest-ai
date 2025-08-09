@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixie - 투자 학습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-secondary: #5E97F4;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .nav-link {
+            color: var(--pixie-gray);
+            font-weight: 500;
+            margin: 0 1rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--pixie-primary);
+        }
+
+        .learning-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .learning-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .learning-header h1 {
+            color: var(--pixie-primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .learning-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--pixie-shadow);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .learning-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .learning-icon {
+            font-size: 48px;
+            color: var(--pixie-primary);
+            margin-bottom: 1rem;
+        }
+
+        .learning-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--pixie-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .learning-description {
+            color: var(--pixie-gray);
+            font-size: 14px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .difficulty.beginner {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .difficulty.intermediate {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .difficulty.advanced {
+            background: #FCE4EC;
+            color: #C2185B;
+        }
+
+        .tab-content {
+            margin-top: 2rem;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--pixie-gray);
+            font-weight: 600;
+            border: none;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--pixie-primary);
+            border-bottom-color: var(--pixie-primary);
+            background: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Pixie</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">대시보드</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="survey.html">투자 설문</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="learning.html">투자 학습</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chatbot.html">AI 챗봇</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="stock.html">주가 예측</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">뉴스/이슈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-invest.html">MY 투자</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 학습 컨테이너 -->
+    <div class="learning-container">
+        <div class="learning-header">
+            <h1>투자 학습 센터</h1>
+            <p>단계별 투자 교육 콘텐츠로 투자 실력을 키워보세요</p>
+        </div>
+
+        <!-- 탭 네비게이션 -->
+        <ul class="nav nav-tabs" id="learningTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="basics-tab" data-bs-toggle="tab" data-bs-target="#basics">기초 과정</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="intermediate-tab" data-bs-toggle="tab" data-bs-target="#intermediate">중급 과정</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced">고급 과정</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="news-tab" data-bs-toggle="tab" data-bs-target="#news">투자 뉴스</button>
+            </li>
+        </ul>
+
+        <!-- 탭 콘텐츠 -->
+        <div class="tab-content" id="learningContent">
+            <!-- 기초 과정 -->
+            <div class="tab-pane fade show active" id="basics" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="learning-title">주식투자 기초</h3>
+                            <p class="learning-description">주식시장의 기본 개념과 용어를 배워보세요</p>
+                            <span class="difficulty beginner">초급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 class="learning-title">차트 읽기</h3>
+                            <p class="learning-description">기본적인 차트 분석 방법을 익혀보세요</p>
+                            <span class="difficulty beginner">초급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                            <h3 class="learning-title">투자 계획 세우기</h3>
+                            <p class="learning-description">나만의 투자 계획을 수립하는 방법</p>
+                            <span class="difficulty beginner">초급</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 중급 과정 -->
+            <div class="tab-pane fade" id="intermediate" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3 class="learning-title">재무제표 분석</h3>
+                            <p class="learning-description">기업의 재무 건전성을 평가하는 방법</p>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                            <h3 class="learning-title">포트폴리오 관리</h3>
+                            <p class="learning-description">리스크를 분산하는 포트폴리오 전략</p>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h3 class="learning-title">섹터별 투자</h3>
+                            <p class="learning-description">산업별 특성과 투자 전략 이해하기</p>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 고급 과정 -->
+            <div class="tab-pane fade" id="advanced" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h3 class="learning-title">알고리즘 트레이딩</h3>
+                            <p class="learning-description">자동화된 투자 전략 구축하기</p>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3 class="learning-title">글로벌 투자</h3>
+                            <p class="learning-description">해외 시장 투자 전략과 환율 헤지</p>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="learning-card">
+                            <div class="learning-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3 class="learning-title">리스크 관리</h3>
+                            <p class="learning-description">고급 리스크 관리 기법과 헤징 전략</p>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 투자 뉴스 -->
+            <div class="tab-pane fade" id="news" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="learning-card">
+                            <h3 class="learning-title">📰 주간 시장 전망</h3>
+                            <p class="learning-description">이번 주 주목해야 할 시장 이슈와 전망을 확인하세요</p>
+                            <small class="text-muted">2024.01.15 업데이트</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="learning-card">
+                            <h3 class="learning-title">💡 투자 인사이트</h3>
+                            <p class="learning-description">전문가들의 투자 팁과 시장 분석을 만나보세요</p>
+                            <small class="text-muted">2024.01.14 업데이트</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

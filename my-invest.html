@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY 투자 - Pixie AI 투자 어드바이저</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-primary-dark: #0B3DCF;
+            --pixie-secondary: #5E97F4;
+            --pixie-dark: #2F2E41;
+            --pixie-dark-light: #3F3D56;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-green: #22C55E;
+            --pixie-red: #EF4444;
+            --pixie-yellow: #F59E0B;
+            --pixie-text-muted: #8F8F8F;
+            --pixie-gradient: linear-gradient(90deg, #5E97F4 0%, #3B7AFF 100%);
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+            --pixie-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--pixie-black);
+            background: var(--pixie-light-gray);
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        .pixie-navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 20px 134px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .pixie-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-menu {
+            display: flex;
+            gap: 60px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pixie-nav-item {
+            text-align: center;
+            color: var(--pixie-black);
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .pixie-nav-item:hover,
+        .pixie-nav-item.active {
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .pixie-btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .pixie-btn-primary {
+            background: var(--pixie-gradient);
+            color: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-btn-secondary {
+            background: linear-gradient(135deg, var(--pixie-green), #16a34a);
+            color: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        /* 메인 컨테이너 */
+        .pixie-main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .pixie-page-header {
+            text-align: center;
+            margin-bottom: 48px;
+            background: var(--pixie-white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-page-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 16px;
+        }
+
+        .pixie-page-subtitle {
+            font-size: 20px;
+            color: var(--pixie-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 포트폴리오 요약 */
+        .pixie-portfolio-summary {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-portfolio-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .pixie-portfolio-stat {
+            text-align: center;
+            padding: 24px;
+            border-radius: 16px;
+            background: var(--pixie-light-gray);
+            position: relative;
+        }
+
+        .pixie-portfolio-stat-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .pixie-portfolio-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pixie-portfolio-stat-label {
+            color: var(--pixie-gray);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .pixie-portfolio-stat-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 카드 */
+        .pixie-card {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--pixie-shadow);
+            margin-bottom: 32px;
+        }
+
+        .pixie-card h3 {
+            color: var(--pixie-black);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* 주식 리스트 */
+        .pixie-stock-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .pixie-stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--pixie-light-gray);
+            border-radius: 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .pixie-stock-item:hover {
+            background: #e8f2ff;
+            transform: translateY(-1px);
+        }
+
+        .pixie-stock-info {
+            flex: 1;
+        }
+
+        .pixie-stock-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 4px;
+        }
+
+        .pixie-stock-code {
+            font-size: 14px;
+            color: var(--pixie-text-muted);
+        }
+
+        .pixie-stock-quantity {
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        .pixie-stock-quantity-label {
+            font-size: 12px;
+            color: var(--pixie-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .pixie-stock-quantity-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--pixie-black);
+        }
+
+        .pixie-stock-price {
+            text-align: right;
+        }
+
+        .pixie-stock-current-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 4px;
+        }
+
+        .pixie-stock-change {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .pixie-positive { color: var(--pixie-green); }
+        .pixie-negative { color: var(--pixie-red); }
+
+        /* 차트 컨테이너 */
+        .pixie-chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+
+        /* AI 추천 섹션 */
+        .pixie-recommendation {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 2px solid var(--pixie-primary);
+        }
+
+        .pixie-recommendation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pixie-recommendation-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--pixie-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pixie-white);
+            font-size: 20px;
+        }
+
+        .pixie-recommendation-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--pixie-black);
+        }
+
+        .pixie-recommendation-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .pixie-recommendation-item {
+            background: var(--pixie-white);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--pixie-shadow);
+            transition: all 0.2s ease;
+        }
+
+        .pixie-recommendation-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        .pixie-recommendation-stock {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 8px;
+        }
+
+        .pixie-recommendation-reason {
+            color: var(--pixie-gray);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .pixie-navbar {
+                padding: 20px;
+            }
+
+            .pixie-nav-menu {
+                display: none;
+            }
+
+            .pixie-page-title {
+                font-size: 32px;
+            }
+
+            .pixie-main-container {
+                padding: 20px 15px;
+            }
+
+            .pixie-stock-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .pixie-stock-quantity {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="pixie-navbar">
+        <div class="pixie-nav-content">
+            <a href="index.html" class="pixie-logo">
+                Pixie
+            </a>
+            <ul class="pixie-nav-menu">
+                <li><a href="survey.html" class="pixie-nav-item">투자 설문</a></li>
+                <li><a href="learning.html" class="pixie-nav-item">투자 학습</a></li>
+                <li><a href="chatbot.html" class="pixie-nav-item">AI 챗봇</a></li>
+                <li><a href="stock.html" class="pixie-nav-item">주가 예측</a></li>
+                <li><a href="news.html" class="pixie-nav-item">뉴스/이슈</a></li>
+                <li><a href="my-invest.html" class="pixie-nav-item active">MY 투자</a></li>
+            </ul>
+            <div class="pixie-nav-icons">
+                <a href="dashboard.html" class="pixie-btn pixie-btn-primary">대시보드</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <div class="pixie-main-container">
+        <!-- 페이지 헤더 -->
+        <div class="pixie-page-header">
+            <h1 class="pixie-page-title">💼 MY 투자 포트폴리오</h1>
+            <p class="pixie-page-subtitle">
+                개인 맞춤형 포트폴리오 분석과 AI 추천을 통해<br>
+                더 나은 투자 결정을 내리세요
+            </p>
+        </div>
+
+        <!-- 포트폴리오 요약 -->
+        <div class="pixie-portfolio-summary">
+            <h3 style="color: var(--pixie-black); font-weight: 700; margin-bottom: 24px; text-align: center;">
+                <i class="fas fa-chart-pie me-2"></i>포트폴리오 현황
+            </h3>
+            <div class="pixie-portfolio-stats">
+                <div class="pixie-portfolio-stat">
+                    <div class="pixie-portfolio-stat-icon">💰</div>
+                    <div class="pixie-portfolio-stat-value" style="color: var(--pixie-primary);">125,450,000</div>
+                    <div class="pixie-portfolio-stat-label">총 자산 (원)</div>
+                    <div class="pixie-portfolio-stat-change pixie-positive">+2,450,000 (+1.99%)</div>
+                </div>
+                <div class="pixie-portfolio-stat">
+                    <div class="pixie-portfolio-stat-icon">📈</div>
+                    <div class="pixie-portfolio-stat-value" style="color: var(--pixie-green);">+8.7%</div>
+                    <div class="pixie-portfolio-stat-label">수익률 (YTD)</div>
+                    <div class="pixie-portfolio-stat-change pixie-positive">+0.5%p (전주 대비)</div>
+                </div>
+                <div class="pixie-portfolio-stat">
+                    <div class="pixie-portfolio-stat-icon">🎯</div>
+                    <div class="pixie-portfolio-stat-value" style="color: var(--pixie-yellow);">12</div>
+                    <div class="pixie-portfolio-stat-label">보유 종목 수</div>
+                    <div class="pixie-portfolio-stat-change" style="color: var(--pixie-gray);">균형잡힌 분산투자</div>
+                </div>
+                <div class="pixie-portfolio-stat">
+                    <div class="pixie-portfolio-stat-icon">⚖️</div>
+                    <div class="pixie-portfolio-stat-value" style="color: var(--pixie-primary);">중립형</div>
+                    <div class="pixie-portfolio-stat-label">투자 성향</div>
+                    <div class="pixie-portfolio-stat-change" style="color: var(--pixie-gray);">위험도 50%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- 보유 주식 -->
+                <div class="pixie-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3><i class="fas fa-list me-2"></i>보유 주식</h3>
+                        <button class="pixie-btn pixie-btn-secondary" onclick="refreshPortfolio()">
+                            <i class="fas fa-sync-alt"></i>
+                            새로고침
+                        </button>
+                    </div>
+                    <div class="pixie-stock-list" id="stock-list">
+                        <!-- 주식 리스트가 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+
+                <!-- 포트폴리오 차트 -->
+                <div class="pixie-card">
+                    <h3><i class="fas fa-chart-area me-2"></i>포트폴리오 성과</h3>
+                    <div class="pixie-chart-container">
+                        <canvas id="portfolio-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- AI 추천 -->
+                <div class="pixie-recommendation">
+                    <div class="pixie-recommendation-header">
+                        <div class="pixie-recommendation-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 class="pixie-recommendation-title">AI 투자 추천</h3>
+                            <p style="color: var(--pixie-gray); margin: 0;">당신의 성향에 맞는 종목</p>
+                        </div>
+                    </div>
+                    <div class="pixie-recommendation-list" id="recommendations">
+                        <!-- AI 추천이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+
+                <!-- 자산 배분 -->
+                <div class="pixie-card">
+                    <h3><i class="fas fa-pie-chart me-2"></i>자산 배분</h3>
+                    <div class="pixie-chart-container" style="height: 300px;">
+                        <canvas id="allocation-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 최근 거래 -->
+                <div class="pixie-card">
+                    <h3><i class="fas fa-history me-2"></i>최근 거래</h3>
+                    <div id="recent-trades">
+                        <!-- 최근 거래 내역이 여기에 표시됩니다 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 샘플 포트폴리오 데이터
+        const portfolioData = {
+            stocks: [
+                {
+                    name: "삼성전자",
+                    code: "005930",
+                    quantity: 150,
+                    currentPrice: 62700,
+                    change: -800,
+                    changePercent: -1.26
+                },
+                {
+                    name: "SK하이닉스",
+                    code: "000660",
+                    quantity: 80,
+                    currentPrice: 125000,
+                    change: 2000,
+                    changePercent: 1.63
+                },
+                {
+                    name: "네이버",
+                    code: "035420",
+                    quantity: 50,
+                    currentPrice: 185000,
+                    change: -3000,
+                    changePercent: -1.60
+                },
+                {
+                    name: "카카오",
+                    code: "035720",
+                    quantity: 120,
+                    currentPrice: 78000,
+                    change: 1500,
+                    changePercent: 1.96
+                },
+                {
+                    name: "LG전자",
+                    code: "066570",
+                    quantity: 200,
+                    currentPrice: 89000,
+                    change: 500,
+                    changePercent: 0.56
+                }
+            ],
+            recommendations: [
+                {
+                    stock: "현대차",
+                    reason: "전기차 시장 성장과 해외 수주 증가로 중장기 성장 전망 밝음"
+                },
+                {
+                    stock: "POSCO홀딩스",
+                    reason: "2차전지 소재 사업 확장과 ESG 경영으로 가치 상승 기대"
+                },
+                {
+                    stock: "셀트리온",
+                    reason: "바이오 의약품 시장 확대와 신약 파이프라인 강화"
+                }
+            ]
+        };
+
+        let portfolioChart = null;
+        let allocationChart = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayStocks();
+            displayRecommendations();
+            displayRecentTrades();
+            createPortfolioChart();
+            createAllocationChart();
+        });
+
+        function displayStocks() {
+            const stockList = document.getElementById('stock-list');
+            const stocksHtml = portfolioData.stocks.map(stock => {
+                const changeClass = stock.change >= 0 ? 'pixie-positive' : 'pixie-negative';
+                const changeSign = stock.change >= 0 ? '+' : '';
+                const totalValue = stock.quantity * stock.currentPrice;
+                
+                return `
+                    <div class="pixie-stock-item" onclick="showStockDetail('${stock.code}')">
+                        <div class="pixie-stock-info">
+                            <div class="pixie-stock-name">${stock.name}</div>
+                            <div class="pixie-stock-code">${stock.code}</div>
+                        </div>
+                        <div class="pixie-stock-quantity">
+                            <div class="pixie-stock-quantity-label">보유 수량</div>
+                            <div class="pixie-stock-quantity-value">${stock.quantity.toLocaleString()}주</div>
+                        </div>
+                        <div class="pixie-stock-price">
+                            <div class="pixie-stock-current-price">${stock.currentPrice.toLocaleString()}원</div>
+                            <div class="pixie-stock-change ${changeClass}">
+                                ${changeSign}${stock.change.toLocaleString()}원 (${changeSign}${stock.changePercent}%)
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 20px;">
+                            <div style="font-size: 14px; color: var(--pixie-text-muted); margin-bottom: 4px;">평가액</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--pixie-black);">
+                                ${totalValue.toLocaleString()}원
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            stockList.innerHTML = stocksHtml;
+        }
+
+        function displayRecommendations() {
+            const recommendations = document.getElementById('recommendations');
+            const recommendationsHtml = portfolioData.recommendations.map(rec => `
+                <div class="pixie-recommendation-item">
+                    <div class="pixie-recommendation-stock">${rec.stock}</div>
+                    <div class="pixie-recommendation-reason">${rec.reason}</div>
+                </div>
+            `).join('');
+            
+            recommendations.innerHTML = recommendationsHtml;
+        }
+
+        function displayRecentTrades() {
+            const recentTrades = [
+                { type: 'buy', stock: '삼성전자', quantity: 50, price: 63500, date: '2024-01-08' },
+                { type: 'sell', stock: '카카오', quantity: 30, price: 76500, date: '2024-01-05' },
+                { type: 'buy', stock: 'SK하이닉스', quantity: 20, price: 123000, date: '2024-01-03' }
+            ];
+
+            const tradesHtml = recentTrades.map(trade => {
+                const typeText = trade.type === 'buy' ? '매수' : '매도';
+                const typeClass = trade.type === 'buy' ? 'pixie-positive' : 'pixie-negative';
+                
+                return `
+                    <div style="padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+                        <div style="display: flex; justify-content: between; align-items: center;">
+                            <div>
+                                <span class="${typeClass}" style="font-weight: 600;">${typeText}</span>
+                                <span style="margin-left: 8px; color: var(--pixie-black);">${trade.stock}</span>
+                            </div>
+                            <div style="text-align: right; font-size: 12px; color: var(--pixie-text-muted);">
+                                ${trade.date}
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: var(--pixie-gray); margin-top: 4px;">
+                            ${trade.quantity.toLocaleString()}주 × ${trade.price.toLocaleString()}원
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('recent-trades').innerHTML = tradesHtml;
+        }
+
+        function createPortfolioChart() {
+            const ctx = document.getElementById('portfolio-chart').getContext('2d');
+            
+            // 최근 30일 데이터 시뮬레이션
+            const labels = [];
+            const data = [];
+            const baseValue = 115000000;
+            
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+                
+                // 랜덤 변동 시뮬레이션
+                const variation = (Math.random() - 0.5) * 0.02;
+                const value = baseValue * (1 + (29 - i) * 0.003 + variation);
+                data.push(Math.round(value));
+            }
+
+            portfolioChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '포트폴리오 가치',
+                        data: data,
+                        borderColor: '#1454FE',
+                        backgroundColor: 'rgba(20, 84, 254, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: '최근 30일 포트폴리오 성과'
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            display: true,
+                            title: { display: true, text: '날짜' }
+                        },
+                        y: { 
+                            display: true,
+                            title: { display: true, text: '포트폴리오 가치 (원)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 100000000).toFixed(1) + '억';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAllocationChart() {
+            const ctx = document.getElementById('allocation-chart').getContext('2d');
+            
+            // 종목별 비중 계산
+            const totalValue = portfolioData.stocks.reduce((sum, stock) => 
+                sum + (stock.quantity * stock.currentPrice), 0);
+                
+            const allocations = portfolioData.stocks.map(stock => ({
+                label: stock.name,
+                value: ((stock.quantity * stock.currentPrice) / totalValue * 100).toFixed(1)
+            }));
+
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: allocations.map(a => a.label),
+                    datasets: [{
+                        data: allocations.map(a => a.value),
+                        backgroundColor: [
+                            '#1454FE',
+                            '#22C55E',
+                            '#F59E0B',
+                            '#EF4444',
+                            '#8B5CF6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showStockDetail(stockCode) {
+            const stock = portfolioData.stocks.find(s => s.code === stockCode);
+            if (stock) {
+                alert(`${stock.name} (${stock.code}) 상세 정보\n\n보유 수량: ${stock.quantity.toLocaleString()}주\n현재 가격: ${stock.currentPrice.toLocaleString()}원\n평가 손익: ${stock.change >= 0 ? '+' : ''}${(stock.change * stock.quantity).toLocaleString()}원`);
+            }
+        }
+
+        function refreshPortfolio() {
+            // 실제로는 API를 호출하여 최신 데이터를 가져옴
+            alert('포트폴리오 데이터를 새로고침했습니다.');
+            
+            // 차트 업데이트 시뮬레이션
+            if (portfolioChart) {
+                const newData = portfolioChart.data.datasets[0].data.map(value => 
+                    value + (Math.random() - 0.5) * 1000000
+                );
+                portfolioChart.data.datasets[0].data = newData;
+                portfolioChart.update();
+            }
+        }
+    </script>
+</body>
+</html>

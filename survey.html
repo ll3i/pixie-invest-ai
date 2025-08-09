@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixie - 투자 성향 분석</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-primary-dark: #0B3DCF;
+            --pixie-secondary: #5E97F4;
+            --pixie-dark: #2F2E41;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-green: #22C55E;
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .nav-link {
+            color: var(--pixie-gray);
+            font-weight: 500;
+            margin: 0 1rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--pixie-primary);
+        }
+
+        .survey-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .survey-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .survey-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .survey-header h2 {
+            color: var(--pixie-primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .survey-header p {
+            color: var(--pixie-gray);
+            font-size: 18px;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--pixie-primary);
+            transition: width 0.3s ease;
+        }
+
+        .question-section {
+            display: none;
+        }
+
+        .question-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--pixie-black);
+            margin-bottom: 2rem;
+        }
+
+        .answer-option {
+            background: var(--pixie-light-gray);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-option:hover {
+            border-color: var(--pixie-secondary);
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            background: var(--pixie-primary);
+            color: white;
+            border-color: var(--pixie-primary);
+        }
+
+        .answer-option input[type="radio"] {
+            display: none;
+        }
+
+        .survey-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn-survey {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-prev {
+            background: var(--pixie-light-gray);
+            color: var(--pixie-gray);
+        }
+
+        .btn-next {
+            background: var(--pixie-primary);
+            color: white;
+        }
+
+        .btn-survey:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            display: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 80px;
+            color: var(--pixie-green);
+            margin-bottom: 1rem;
+        }
+
+        .result-type {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+            margin-bottom: 1rem;
+        }
+
+        .result-description {
+            font-size: 18px;
+            color: var(--pixie-gray);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .result-chart {
+            background: var(--pixie-light-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: var(--pixie-black);
+        }
+
+        .stat-bar {
+            flex: 1;
+            height: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: var(--pixie-primary);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--pixie-primary);
+            min-width: 50px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Pixie</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">대시보드</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="survey.html">투자 설문</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="learning.html">투자 학습</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="chatbot.html">AI 챗봇</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="stock.html">주가 예측</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">뉴스/이슈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-invest.html">MY 투자</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 설문 컨테이너 -->
+    <div class="survey-container">
+        <div class="survey-card">
+            <div class="survey-header">
+                <h2>투자 성향 분석</h2>
+                <p>간단한 질문을 통해 당신의 투자 성향을 파악해보세요</p>
+            </div>
+
+            <!-- 진행 바 -->
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" style="width: 20%"></div>
+                </div>
+                <p class="text-center mt-2" id="progressText">1 / 5</p>
+            </div>
+
+            <!-- 질문 섹션들 -->
+            <div class="question-section active" id="question1">
+                <h3 class="question-title">Q1. 투자 시 가장 중요하게 생각하는 것은?</h3>
+                <label class="answer-option">
+                    <input type="radio" name="q1" value="1">
+                    원금 보존이 가장 중요합니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q1" value="2">
+                    안정적인 수익을 추구합니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q1" value="3">
+                    적절한 위험과 수익의 균형을 원합니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q1" value="4">
+                    높은 수익을 위해 위험을 감수할 수 있습니다
+                </label>
+            </div>
+
+            <div class="question-section" id="question2">
+                <h3 class="question-title">Q2. 투자 기간은 어느 정도로 생각하시나요?</h3>
+                <label class="answer-option">
+                    <input type="radio" name="q2" value="1">
+                    1년 이내 단기 투자
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q2" value="2">
+                    1-3년 중단기 투자
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q2" value="3">
+                    3-5년 중장기 투자
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q2" value="4">
+                    5년 이상 장기 투자
+                </label>
+            </div>
+
+            <div class="question-section" id="question3">
+                <h3 class="question-title">Q3. 투자 경험은 어느 정도이신가요?</h3>
+                <label class="answer-option">
+                    <input type="radio" name="q3" value="1">
+                    투자 경험이 전혀 없습니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q3" value="2">
+                    1년 미만의 초보 투자자입니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q3" value="3">
+                    1-3년의 투자 경험이 있습니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q3" value="4">
+                    3년 이상의 투자 경험이 있습니다
+                </label>
+            </div>
+
+            <div class="question-section" id="question4">
+                <h3 class="question-title">Q4. 투자 자산이 -20% 손실을 보았다면?</h3>
+                <label class="answer-option">
+                    <input type="radio" name="q4" value="1">
+                    즉시 모든 자산을 매도합니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q4" value="2">
+                    일부를 매도하여 손실을 줄입니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q4" value="3">
+                    현재 상태를 유지하며 지켜봅니다
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q4" value="4">
+                    추가 매수의 기회로 생각합니다
+                </label>
+            </div>
+
+            <div class="question-section" id="question5">
+                <h3 class="question-title">Q5. 투자 목표는 무엇인가요?</h3>
+                <label class="answer-option">
+                    <input type="radio" name="q5" value="1">
+                    은퇴 자금 준비
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q5" value="2">
+                    주택 구입 자금 마련
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q5" value="3">
+                    자녀 교육 자금 준비
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="q5" value="4">
+                    자산 증식 및 부의 축적
+                </label>
+            </div>
+
+            <!-- 결과 섹션 -->
+            <div class="result-section" id="resultSection">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="result-type" id="resultType">안정형 투자자</h2>
+                <p class="result-description" id="resultDescription">
+                    당신은 원금 보존을 최우선으로 생각하며, 안정적인 투자를 선호하는 투자자입니다.
+                    예금, 채권 등 안정적인 상품 위주의 포트폴리오 구성을 추천드립니다.
+                </p>
+                
+                <div class="result-chart">
+                    <h4 class="mb-3">투자 성향 분석 결과</h4>
+                    <div class="stat-item">
+                        <span class="stat-label">위험 감수도</span>
+                        <div class="stat-bar">
+                            <div class="stat-fill" id="riskBar" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-value" id="riskValue">20%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">투자 지식</span>
+                        <div class="stat-bar">
+                            <div class="stat-fill" id="knowledgeBar" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-value" id="knowledgeValue">40%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">투자 기간</span>
+                        <div class="stat-bar">
+                            <div class="stat-fill" id="periodBar" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-value" id="periodValue">60%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">수익 추구</span>
+                        <div class="stat-bar">
+                            <div class="stat-fill" id="profitBar" style="width: 0%"></div>
+                        </div>
+                        <span class="stat-value" id="profitValue">30%</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-survey btn-next" onclick="location.href='dashboard.html'">
+                    대시보드로 이동
+                </button>
+            </div>
+
+            <!-- 버튼 -->
+            <div class="survey-buttons" id="surveyButtons">
+                <button class="btn btn-survey btn-prev" onclick="prevQuestion()" id="prevBtn" style="visibility: hidden;">
+                    이전
+                </button>
+                <button class="btn btn-survey btn-next" onclick="nextQuestion()" id="nextBtn">
+                    다음
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        const answers = {};
+
+        // 답변 선택 이벤트
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input');
+                const questionNum = input.name;
+                
+                // 같은 질문의 다른 옵션들 선택 해제
+                document.querySelectorAll(`input[name="${questionNum}"]`).forEach(radio => {
+                    radio.parentElement.classList.remove('selected');
+                });
+                
+                // 현재 옵션 선택
+                input.checked = true;
+                this.classList.add('selected');
+                answers[questionNum] = input.value;
+            });
+        });
+
+        function nextQuestion() {
+            const currentQ = document.querySelector(`#question${currentQuestion}`);
+            const selectedAnswer = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+            
+            if (!selectedAnswer) {
+                alert('답변을 선택해주세요.');
+                return;
+            }
+
+            if (currentQuestion < totalQuestions) {
+                currentQ.classList.remove('active');
+                currentQuestion++;
+                const nextQ = document.querySelector(`#question${currentQuestion}`);
+                nextQ.classList.add('active');
+                
+                updateProgress();
+                
+                if (currentQuestion > 1) {
+                    document.getElementById('prevBtn').style.visibility = 'visible';
+                }
+                
+                if (currentQuestion === totalQuestions) {
+                    document.getElementById('nextBtn').textContent = '결과 보기';
+                }
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                const currentQ = document.querySelector(`#question${currentQuestion}`);
+                currentQ.classList.remove('active');
+                currentQuestion--;
+                const prevQ = document.querySelector(`#question${currentQuestion}`);
+                prevQ.classList.add('active');
+                
+                updateProgress();
+                
+                if (currentQuestion === 1) {
+                    document.getElementById('prevBtn').style.visibility = 'hidden';
+                }
+                
+                document.getElementById('nextBtn').textContent = '다음';
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentQuestion} / ${totalQuestions}`;
+        }
+
+        function showResult() {
+            // 점수 계산
+            let totalScore = 0;
+            Object.values(answers).forEach(value => {
+                totalScore += parseInt(value);
+            });
+            
+            // 투자 성향 결정
+            let type, description;
+            let riskScore, knowledgeScore, periodScore, profitScore;
+            
+            if (totalScore <= 7) {
+                type = "안정형 투자자";
+                description = "당신은 원금 보존을 최우선으로 생각하며, 안정적인 투자를 선호하는 투자자입니다. 예금, 채권 등 안정적인 상품 위주의 포트폴리오 구성을 추천드립니다.";
+                riskScore = 20;
+                knowledgeScore = 40;
+                periodScore = 60;
+                profitScore = 30;
+            } else if (totalScore <= 12) {
+                type = "안정추구형 투자자";
+                description = "당신은 안정성을 중시하면서도 적절한 수익을 추구하는 투자자입니다. 채권과 우량주 중심의 보수적인 포트폴리오를 추천드립니다.";
+                riskScore = 40;
+                knowledgeScore = 50;
+                periodScore = 70;
+                profitScore = 50;
+            } else if (totalScore <= 17) {
+                type = "균형형 투자자";
+                description = "당신은 위험과 수익의 균형을 추구하는 투자자입니다. 주식과 채권을 적절히 배분한 균형잡힌 포트폴리오를 추천드립니다.";
+                riskScore = 60;
+                knowledgeScore = 60;
+                periodScore = 80;
+                profitScore = 70;
+            } else {
+                type = "공격형 투자자";
+                description = "당신은 높은 수익을 위해 위험을 감수할 수 있는 투자자입니다. 성장주와 신흥시장 중심의 공격적인 포트폴리오를 추천드립니다.";
+                riskScore = 80;
+                knowledgeScore = 80;
+                periodScore = 90;
+                profitScore = 90;
+            }
+            
+            // 결과 표시
+            document.querySelectorAll('.question-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('surveyButtons').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            document.getElementById('resultType').textContent = type;
+            document.getElementById('resultDescription').textContent = description;
+            
+            // 애니메이션으로 차트 표시
+            setTimeout(() => {
+                document.getElementById('riskBar').style.width = riskScore + '%';
+                document.getElementById('riskValue').textContent = riskScore + '%';
+                
+                document.getElementById('knowledgeBar').style.width = knowledgeScore + '%';
+                document.getElementById('knowledgeValue').textContent = knowledgeScore + '%';
+                
+                document.getElementById('periodBar').style.width = periodScore + '%';
+                document.getElementById('periodValue').textContent = periodScore + '%';
+                
+                document.getElementById('profitBar').style.width = profitScore + '%';
+                document.getElementById('profitValue').textContent = profitScore + '%';
+            }, 100);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주가 예측 - Pixie AI 투자 어드바이저</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-primary-dark: #0B3DCF;
+            --pixie-secondary: #5E97F4;
+            --pixie-dark: #2F2E41;
+            --pixie-dark-light: #3F3D56;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-green: #22C55E;
+            --pixie-red: #EF4444;
+            --pixie-text-muted: #8F8F8F;
+            --pixie-gradient: linear-gradient(90deg, #5E97F4 0%, #3B7AFF 100%);
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+            --pixie-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--pixie-black);
+            background: var(--pixie-light-gray);
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        .pixie-navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 20px 134px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .pixie-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-menu {
+            display: flex;
+            gap: 60px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pixie-nav-item {
+            text-align: center;
+            color: var(--pixie-black);
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .pixie-nav-item:hover,
+        .pixie-nav-item.active {
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        /* 메인 컨테이너 */
+        .pixie-main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .pixie-page-header {
+            text-align: center;
+            margin-bottom: 48px;
+            background: var(--pixie-white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-page-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--pixie-black);
+            margin-bottom: 16px;
+        }
+
+        .pixie-page-subtitle {
+            font-size: 20px;
+            color: var(--pixie-gray);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 검색 섹션 */
+        .pixie-search-section {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-search-form {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pixie-stock-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 16px 20px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: var(--pixie-light-gray);
+        }
+
+        .pixie-stock-input:focus {
+            border-color: var(--pixie-primary);
+            box-shadow: 0 0 0 3px rgba(20, 84, 254, 0.1);
+            outline: none;
+            background: var(--pixie-white);
+        }
+
+        .pixie-btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .pixie-btn-primary {
+            background: var(--pixie-gradient);
+            color: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-btn-secondary {
+            background: linear-gradient(135deg, var(--pixie-green), #16a34a);
+            color: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        /* 카드 */
+        .pixie-card {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--pixie-shadow);
+            margin-bottom: 32px;
+        }
+
+        .pixie-card h3 {
+            color: var(--pixie-black);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* 로딩 */
+        .pixie-loading {
+            text-align: center;
+            padding: 48px;
+            background: var(--pixie-white);
+            border-radius: 20px;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e5e5;
+            border-left: 4px solid var(--pixie-primary);
+            border-radius: 50%;
+            animation: pixieSpinner 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes pixieSpinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 결과 카드 */
+        .pixie-result-card {
+            background: var(--pixie-white);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e5e5e5;
+            box-shadow: var(--pixie-shadow);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pixie-result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        .pixie-result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--pixie-gradient);
+        }
+
+        .pixie-trend-up { color: var(--pixie-green); }
+        .pixie-trend-down { color: var(--pixie-red); }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .pixie-navbar {
+                padding: 20px;
+            }
+
+            .pixie-nav-menu {
+                display: none;
+            }
+
+            .pixie-page-title {
+                font-size: 32px;
+            }
+
+            .pixie-search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .pixie-stock-input {
+                min-width: auto;
+            }
+
+            .pixie-main-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="pixie-navbar">
+        <div class="pixie-nav-content">
+            <a href="index.html" class="pixie-logo">
+                Pixie
+            </a>
+            <ul class="pixie-nav-menu">
+                <li><a href="survey.html" class="pixie-nav-item">투자 설문</a></li>
+                <li><a href="learning.html" class="pixie-nav-item">투자 학습</a></li>
+                <li><a href="chatbot.html" class="pixie-nav-item">AI 챗봇</a></li>
+                <li><a href="stock.html" class="pixie-nav-item active">주가 예측</a></li>
+                <li><a href="news.html" class="pixie-nav-item">뉴스/이슈</a></li>
+                <li><a href="my-invest.html" class="pixie-nav-item">MY 투자</a></li>
+            </ul>
+            <div class="pixie-nav-icons">
+                <a href="dashboard.html" class="pixie-btn pixie-btn-primary">대시보드</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <div class="pixie-main-container">
+        <!-- 페이지 헤더 -->
+        <div class="pixie-page-header">
+            <h1 class="pixie-page-title">📈 AI 주가 예측</h1>
+            <p class="pixie-page-subtitle">
+                ARIMA-X 모델과 뉴스 감정 분석을 결합한 고도화된 주가 예측 시스템으로<br>
+                7일 후 주가를 예측하고 투자 기회를 발견하세요
+            </p>
+        </div>
+
+        <!-- 검색 섹션 -->
+        <div class="pixie-search-section">
+            <form id="stock-form" class="pixie-search-form">
+                <input type="text" class="pixie-stock-input" id="stock-code" placeholder="종목코드를 입력하세요 (예: 005930, 삼성전자)">
+                <button type="submit" class="pixie-btn pixie-btn-primary">
+                    <i class="fas fa-search"></i>
+                    실시간 조회
+                </button>
+                <button type="button" id="load-predictions" class="pixie-btn pixie-btn-secondary">
+                    <i class="fas fa-crystal-ball"></i>
+                    AI 예측 실행
+                </button>
+            </form>
+        </div>
+
+        <!-- 실시간 주가 결과 -->
+        <div id="stock-result" style="display:none;">
+            <div class="pixie-card">
+                <h3 id="stock-title"></h3>
+                <div id="stock-info" style="background: var(--pixie-light-gray); padding: 20px; border-radius: 12px; font-size: 16px; line-height: 1.8; margin-bottom: 24px;"></div>
+                <div style="position: relative; height: 400px;">
+                    <canvas id="stock-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI 예측 결과 -->
+        <div id="prediction-results" style="display:none;">
+            <div class="pixie-card">
+                <div style="text-align: center; border-bottom: 1px solid #e5e5e5; padding-bottom: 24px; margin-bottom: 32px;">
+                    <h2 style="color: var(--pixie-black); font-weight: 700; margin-bottom: 8px;">🔮 ARIMA-X 모델 기반 7일 예측</h2>
+                    <p style="color: var(--pixie-gray); font-size: 18px; margin: 0;">뉴스 감정 분석 및 기술적 지표를 포함한 고도화된 시계열 예측</p>
+                </div>
+                
+                <!-- 투자 성향 기반 추천 -->
+                <div class="alert alert-info mb-4" style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border: none; border-radius: 16px; padding: 24px;">
+                    <h5 class="mb-3"><i class="fas fa-user-chart me-2"></i>투자 성향 기반 맞춤 분석</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>투자 성향:</strong> <span class="badge bg-primary">중립적</span></p>
+                            <p class="mb-2"><strong>위험 감수도:</strong> 50%</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>추천 전략:</strong> 균형 포트폴리오</p>
+                            <p class="mb-0"><strong>관심 종목:</strong> 삼성전자, LG전자, 네이버, 카카오</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="prediction-content"></div>
+                <div class="row" id="prediction-charts" style="margin-top: 32px;"></div>
+            </div>
+        </div>
+
+        <!-- 로딩 스피너 -->
+        <div id="loading-spinner" style="display:none;" class="pixie-loading">
+            <div class="pixie-spinner"></div>
+            <h4 style="color: var(--pixie-black); font-weight: 600; margin-bottom: 8px;">AI 예측 분석 중...</h4>
+            <p style="color: var(--pixie-gray); margin: 0;">ARIMA-X 모델로 시계열 예측을 생성하고 있습니다</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let stockChart = null;
+        let predictionCharts = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 실시간 주가 조회
+            document.getElementById('stock-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const code = document.getElementById('stock-code').value.trim();
+                if (!code) {
+                    alert('종목코드를 입력해주세요');
+                    return;
+                }
+                
+                // 데모 데이터 표시
+                document.getElementById('stock-result').style.display = 'block';
+                document.getElementById('stock-title').textContent = `${code} 실시간 시세`;
+                document.getElementById('stock-info').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>현재가:</strong> 62,700원</p>
+                            <p><strong>전일대비:</strong> <span class="pixie-trend-down">-800원 (-1.26%)</span></p>
+                            <p><strong>거래량:</strong> 8,234,567주</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>시가총액:</strong> 374조 2,800억원</p>
+                            <p><strong>52주 최고:</strong> 89,000원</p>
+                            <p><strong>업데이트:</strong> 2024-01-09 15:30:00</p>
+                        </div>
+                    </div>
+                `;
+                
+                // 차트 생성
+                if (stockChart) stockChart.destroy();
+                const ctx = document.getElementById('stock-chart').getContext('2d');
+                stockChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+                        datasets: [{
+                            label: '주가',
+                            data: [63200, 63100, 62900, 62800, 62950, 62750, 62700],
+                            borderColor: '#1454FE',
+                            backgroundColor: 'rgba(20, 84, 254, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: '실시간 주가 차트'
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                display: true,
+                                title: { display: true, text: '시간' }
+                            },
+                            y: { 
+                                display: true,
+                                title: { display: true, text: '가격 (원)' }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // AI 예측 실행
+            document.getElementById('load-predictions').addEventListener('click', function() {
+                document.getElementById('loading-spinner').style.display = 'block';
+                document.getElementById('prediction-results').style.display = 'none';
+                
+                // 기존 차트 제거
+                predictionCharts.forEach(chart => chart.destroy());
+                predictionCharts = [];
+                
+                // 2초 후 결과 표시 (실제로는 API 호출)
+                setTimeout(() => {
+                    document.getElementById('loading-spinner').style.display = 'none';
+                    displayPredictions();
+                }, 2000);
+            });
+        });
+
+        function displayPredictions() {
+            const predictions = [
+                {
+                    stock_code: '삼성전자 (005930)',
+                    current_price: 62700,
+                    predicted_price: 64500,
+                    change_percent: 2.87,
+                    trend: 'bullish',
+                    confidence: 'high'
+                },
+                {
+                    stock_code: 'SK하이닉스 (000660)',
+                    current_price: 125000,
+                    predicted_price: 122000,
+                    change_percent: -2.40,
+                    trend: 'bearish',
+                    confidence: 'medium'
+                },
+                {
+                    stock_code: '네이버 (035420)',
+                    current_price: 185000,
+                    predicted_price: 190000,
+                    change_percent: 2.70,
+                    trend: 'bullish',
+                    confidence: 'high'
+                },
+                {
+                    stock_code: '카카오 (035720)',
+                    current_price: 78000,
+                    predicted_price: 80500,
+                    change_percent: 3.21,
+                    trend: 'bullish',
+                    confidence: 'medium'
+                }
+            ];
+
+            let contentHtml = '<div class="row">';
+            let chartsHtml = '';
+
+            predictions.forEach((pred, index) => {
+                const changeClass = pred.change_percent >= 0 ? 'pixie-trend-up' : 'pixie-trend-down';
+                const trendIcon = pred.trend === 'bullish' ? '📈' : '📉';
+
+                contentHtml += `
+                    <div class="col-lg-6 mb-4">
+                        <div class="pixie-result-card">
+                            <h5 style="color: var(--pixie-black); font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 20px;">${trendIcon}</span> ${pred.stock_code}
+                            </h5>
+                            <div style="margin-bottom: 20px;">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span style="color: var(--pixie-gray);">현재가</span>
+                                    <span style="color: var(--pixie-black); font-weight: 600;">${pred.current_price.toLocaleString()}원</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span style="color: var(--pixie-gray);">7일 후 예측가</span>
+                                    <span style="color: var(--pixie-black); font-weight: 600;">${pred.predicted_price.toLocaleString()}원</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span style="color: var(--pixie-gray);">예상 변동률</span>
+                                    <span class="${changeClass}" style="font-weight: 700; font-size: 16px;">
+                                        ${pred.change_percent >= 0 ? '+' : ''}${pred.change_percent.toFixed(2)}%
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="background: var(--pixie-light-gray); padding: 12px 16px; border-radius: 8px; font-size: 14px; color: var(--pixie-gray);">
+                                <strong>모델:</strong> ARIMA-X • 
+                                <strong>신뢰도:</strong> ${pred.confidence} • 
+                                <strong>기간:</strong> 7일
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                chartsHtml += `
+                    <div class="col-lg-6 mb-4">
+                        <div class="pixie-card">
+                            <canvas id="prediction-chart-${index}" height="250"></canvas>
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentHtml += '</div>';
+            document.getElementById('prediction-content').innerHTML = contentHtml;
+            document.getElementById('prediction-charts').innerHTML = chartsHtml;
+
+            // 각 종목별 예측 차트 생성
+            predictions.forEach((pred, index) => {
+                const ctx = document.getElementById(`prediction-chart-${index}`).getContext('2d');
+                
+                const labels = [];
+                const currentData = [];
+                const predictedData = [];
+                
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() + i);
+                    labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+                    
+                    if (i === 0) {
+                        currentData.push(pred.current_price);
+                        predictedData.push(pred.current_price);
+                    } else {
+                        currentData.push(null);
+                        const progress = i / 6;
+                        const interpolated = pred.current_price + (pred.predicted_price - pred.current_price) * progress;
+                        predictedData.push(interpolated);
+                    }
+                }
+
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: '현재가',
+                                data: currentData,
+                                borderColor: '#6c757d',
+                                backgroundColor: 'rgba(108,117,125,0.1)',
+                                pointRadius: 6,
+                                tension: 0
+                            },
+                            {
+                                label: 'AI 예측',
+                                data: predictedData,
+                                borderColor: pred.change_percent >= 0 ? '#22C55E' : '#EF4444',
+                                backgroundColor: pred.change_percent >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
+                                borderDash: [5, 5],
+                                pointRadius: 4,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `${pred.stock_code} - 7일 예측`
+                            },
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: '가격 (원)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '날짜'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                predictionCharts.push(chart);
+            });
+
+            document.getElementById('prediction-results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
