@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(git remote set-url:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "mcp__github__push_files",
+      "mcp__github__create_or_update_file",
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixie Template Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+        .template-selector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1454FE;
+            color: white;
+            padding: 10px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .template-selector select {
+            padding: 5px 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-left: 10px;
+        }
+        #template-frame {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(100% - 50px);
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="template-selector">
+        <label>템플릿 선택:</label>
+        <select id="templateSelect" onchange="loadTemplate()">
+            <option value="">-- 템플릿을 선택하세요 --</option>
+            <option value="code/web/templates/index.html">메인 페이지 (index.html)</option>
+            <option value="code/web/templates/dashboard.html">대시보드 (dashboard.html)</option>
+            <option value="code/web/templates/survey.html">투자 설문 (survey.html)</option>
+            <option value="code/web/templates/learning.html">투자 학습 (learning.html)</option>
+            <option value="code/web/templates/chatbot.html">AI 챗봇 (chatbot.html)</option>
+            <option value="code/web/templates/stock.html">주가 예측 (stock.html)</option>
+            <option value="code/web/templates/news.html">뉴스/이슈 (news.html)</option>
+            <option value="code/web/templates/my_invest.html">MY 투자 (my_invest.html)</option>
+            <option value="code/web/templates/minerva.html">Minerva (minerva.html)</option>
+            <option value="code/web/templates/alert_history.html">알림 내역 (alert_history.html)</option>
+            <option value="code/web/templates/alerts.html">알림 설정 (alerts.html)</option>
+            <option value="code/web/templates/market_sentiment.html">시장 감성 (market_sentiment.html)</option>
+            <option value="code/web/templates/result.html">결과 (result.html)</option>
+            <option value="code/web/templates/survey_result.html">설문 결과 (survey_result.html)</option>
+            <option value="code/web/templates/time_series_prediction.html">시계열 예측 (time_series_prediction.html)</option>
+        </select>
+    </div>
+    <iframe id="template-frame" src=""></iframe>
+
+    <script>
+        function loadTemplate() {
+            const select = document.getElementById('templateSelect');
+            const frame = document.getElementById('template-frame');
+            const templatePath = select.value;
+            
+            if (templatePath) {
+                // 직접 템플릿 파일 로드
+                frame.src = templatePath;
+            } else {
+                frame.src = '';
+            }
+        }
+    </script>
+</body>
+</html>
