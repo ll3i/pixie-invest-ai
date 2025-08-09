@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 챗봇 - Pixie</title>
+    
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    
+    <style>
+        /* Pixie Chat Interface Styles */
+        .pixie-chatbot-container {
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .pixie-chat-wrapper {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            height: 90vh;
+            max-height: 900px;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        
+        .pixie-chat-header {
+            background: var(--gradient-primary);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .pixie-chat-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pixie-chat-info h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .pixie-chat-info p {
+            margin: 4px 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+            color: white;
+        }
+        
+        .pixie-chat-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pixie-chat-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .pixie-chat-messages {
+            flex-grow: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: var(--light-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+        
+        .pixie-chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .pixie-chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .pixie-chat-messages::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 3px;
+        }
+        
+        .pixie-message {
+            max-width: 75%;
+            animation: pixieMessageSlide 0.3s ease-out;
+            position: relative;
+        }
+        
+        @keyframes pixieMessageSlide {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .pixie-message-user {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 20px 20px 4px 20px;
+            margin-left: auto;
+            box-shadow: var(--shadow-sm);
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .pixie-message-ai {
+            background: white;
+            color: var(--text-primary);
+            padding: 16px 20px;
+            border-radius: 20px 20px 20px 4px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            font-size: 15px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        .pixie-message-ai .message-content p {
+            margin-bottom: 12px;
+        }
+        
+        .pixie-message-ai .message-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* AI 에이전트 메시지 스타일 */
+        .pixie-message-agent {
+            background: #f0f7ff;
+            color: var(--text-primary);
+            padding: 16px 20px;
+            border-radius: 20px 20px 20px 4px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #cce5ff;
+            font-size: 15px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            margin-bottom: 12px;
+        }
+        
+        .agent-label {
+            font-weight: 700;
+            color: #1454FE;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .agent-label .agent-icon {
+            width: 20px;
+            height: 20px;
+            background: #1454FE;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+        }
+        
+        .pixie-message-agent.agent-a2 {
+            background: #fff5e6;
+            border-color: #ffd6a5;
+        }
+        
+        .pixie-message-agent.agent-a2 .agent-label {
+            color: #ff8c00;
+        }
+        
+        .pixie-message-agent.agent-a2 .agent-icon {
+            background: #ff8c00;
+        }
+        
+        .pixie-message-agent.agent-b {
+            background: #e6f9f5;
+            border-color: #a5e5d6;
+        }
+        
+        .pixie-message-agent.agent-b .agent-label {
+            color: #00a884;
+        }
+        
+        .pixie-message-agent.agent-b .agent-icon {
+            background: #00a884;
+        }
+        
+        .agent-conversation-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .agent-conversation-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+        
+        .agent-conversation-divider span {
+            background: var(--light-color);
+            padding: 0 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .pixie-typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 20px 20px 20px 4px;
+            max-width: 70px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .pixie-typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: pixieTyping 1.4s infinite ease-in-out;
+        }
+        
+        .pixie-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .pixie-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .pixie-typing-dot:nth-child(3) { animation-delay: 0s; }
+        
+        @keyframes pixieTyping {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .pixie-chat-input-container {
+            background: white;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        .pixie-chat-input {
+            flex-grow: 1;
+            background: var(--light-color);
+            border: 2px solid var(--border-color);
+            border-radius: 22px;
+            padding: 12px 18px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        
+        .pixie-chat-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .pixie-chat-input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(20, 84, 254, 0.1);
+        }
+        
+        .pixie-send-button {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+        
+        .pixie-send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .pixie-send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .pixie-suggestions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 12px 20px 8px;
+            background: white;
+            flex-shrink: 0;
+        }
+        
+        .pixie-suggestion-chip {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 6px 14px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .pixie-suggestion-chip:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .pixie-chatbot-container {
+                padding: 20px 16px;
+            }
+            
+            .pixie-chat-wrapper {
+                height: 92vh;
+                border-radius: 16px;
+            }
+            
+            .pixie-chat-header {
+                padding: 20px;
+            }
+            
+            .pixie-chat-messages {
+                padding: 16px;
+            }
+            
+            .pixie-message {
+                max-width: 85%;
+            }
+            
+            .pixie-chat-input-container {
+                padding: 16px;
+            }
+            
+            .pixie-suggestions {
+                padding: 12px 16px 8px;
+            }
+            
+            .pixie-suggestion-chip {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body class="">
+    <!-- 내비게이션 바 -->
+    <nav class="navbar navbar-expand-lg pixie-navbar">
+        <div class="container-fluid pixie-container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../static/images/logo.png" alt="Pixie" style="height: 40px;">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="survey.html">투자 설문</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="learning.html">투자 학습</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="chatbot.html">AI 챗봇</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="stock.html">주가 예측</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">뉴스/이슈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my_invest.html">MY 투자</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <a href="#" class="nav-icon-link">
+                        <img src="../static/images/d1.png" alt="검색" style="width: 20px; height: 20px;">
+                    </a>
+                    <a href="#" class="nav-icon-link position-relative">
+                        <img src="../static/images/d2.png" alt="알림" style="width: 20px; height: 20px;">
+                    </a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="../static/images/d3.png" alt="계정" style="width: 20px; height: 20px;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">프로필</a></li>
+                            <li><a class="dropdown-item" href="#">설정</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">도움말</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pixie-chatbot-container">
+        <div class="pixie-chat-wrapper">
+            <div class="pixie-chat-header">
+                <div class="pixie-chat-avatar">
+                    ✨
+                </div>
+                <div class="pixie-chat-info">
+                    <h2>Pixie AI 어드바이저</h2>
+                    <p>투자에 대한 모든 질문에 답변해드립니다</p>
+                </div>
+                <button class="pixie-chat-close" onclick="window.location.href='../index.html'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="pixie-chat-messages" id="chatMessages">
+                <div class="pixie-message pixie-message-ai">
+                    <div class="message-content">
+                        <p>안녕하세요! 저는 Pixie AI 투자 어드바이저입니다. 투자에 관한 모든 질문에 답변해드릴 수 있습니다.</p>
+                        <p>먼저 투자 성향 설문을 완료해 주세요! 설문이 끝나면 맞춤형 분석과 포트폴리오 추천을 드릴 수 있습니다.</p>
+                        <div style="display: flex; gap: 10px; margin-top: 12px;">
+                            <a href="survey.html" class="pixie-survey-button" style="display: inline-block; padding: 10px 20px; background: #1454FE; color: white; text-decoration: none; border-radius: 20px; font-weight: 500;">투자 설문 시작하기</a>
+                            <a href="#" class="pixie-survey-results-button" onclick="showDemoResults(event)" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 20px; font-weight: 500;">설문 결과 보기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pixie-chat-input-container">
+                <input type="text" class="pixie-chat-input" id="chatInput" placeholder="투자에 대해 궁금한 점을 물어보세요...">
+                <button type="button" class="pixie-send-button" id="sendButton" style="background: #1454FE;">
+                    전송
+                </button>
+            </div>
+            
+            <!-- AI Status Indicator -->
+            <div class="pixie-ai-status" id="aiStatus" style="display: none; background: #f5f5f5; padding: 8px 24px; text-align: center; font-size: 14px; color: #666; border-top: 1px solid #e5e5e5;">
+                <span id="aiStatusText">AI-A is thinking...</span>
+            </div>
+            
+            <div class="pixie-suggestions">
+                <div class="pixie-suggestion-chip" data-suggestion="나의 투자 성향에 어울리는 주식 추천해줘">투자 성향 기반 추천</div>
+                <div class="pixie-suggestion-chip" data-suggestion="포트폴리오 구성법">포트폴리오 구성</div>
+                <div class="pixie-suggestion-chip" data-suggestion="리스크 관리 방법">리스크 관리</div>
+                <div class="pixie-suggestion-chip" data-suggestion="오늘의 시장 분석">시장 분석</div>
+            </div>
+            
+            <!-- 시장 분석 버튼 -->
+            <div style="padding: 12px 20px; border-top: 1px solid var(--border-color); background: white; flex-shrink: 0;">
+                <button type="button" id="marketAnalysisBtn" onclick="requestMarketAnalysis()" style="
+                    width: 100%;
+                    padding: 10px 20px;
+                    background: linear-gradient(135deg, #1454FE 0%, #0F43C9 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 8px rgba(20, 84, 254, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(20, 84, 254, 0.3)';" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(20, 84, 254, 0.2)';"
+                   onmousedown="this.style.transform='translateY(0)';"
+                   onmouseup="this.style.transform='translateY(-2px)';">
+                    <span style="font-size: 18px;">📊</span>
+                    실시간 시장 분석 (AI 뉴스 분석 기반)
+                </button>
+                <p style="text-align: center; color: #666; font-size: 12px; margin-top: 6px; margin-bottom: 4px;">
+                    최신 뉴스 감정 분석을 기반으로 한 시장 동향을 알려드립니다
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    let chatHistory = [];
+    let isTyping = false;
+
+    // 페이지 로드 시 이벤트 리스너 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        // 전송 버튼 이벤트 리스너
+        const sendButton = document.getElementById('sendButton');
+        if (sendButton) {
+            sendButton.addEventListener('click', sendMessage);
+        }
+        
+        // 입력 필드 엔터 키 이벤트 리스너
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) {
+            chatInput.addEventListener('keypress', handleKeyPress);
+        }
+        
+        // 제안 칩 이벤트 리스너
+        const suggestionChips = document.querySelectorAll('.pixie-suggestion-chip');
+        suggestionChips.forEach(chip => {
+            chip.addEventListener('click', function() {
+                const suggestion = this.getAttribute('data-suggestion');
+                sendSuggestion(suggestion);
+            });
+        });
+    });
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        
+        if (!message || isTyping) return;
+        
+        // 사용자 메시지 추가
+        addMessage(message, 'user');
+        input.value = '';
+        
+        // 데모용 AI 응답 생성
+        generateDemoResponse(message);
+    }
+
+    function sendSuggestion(text) {
+        document.getElementById('chatInput').value = text;
+        sendMessage();
+    }
+
+    function addMessage(content, sender) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `pixie-message pixie-message-${sender}`;
+        
+        if (sender === 'user') {
+            messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+        } else {
+            messageDiv.innerHTML = `<div class="message-content"><p>${content}</p></div>`;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const chatMessages = document.getElementById('chatMessages');
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'pixie-typing-indicator';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+            <div class="pixie-typing-dot"></div>
+            <div class="pixie-typing-dot"></div>
+            <div class="pixie-typing-dot"></div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    function generateDemoResponse(userMessage) {
+        isTyping = true;
+        showTypingIndicator();
+        
+        // 데모용 응답 생성
+        setTimeout(() => {
+            hideTypingIndicator();
+            
+            let response = '';
+            
+            if (userMessage.includes('포트폴리오')) {
+                response = '포트폴리오 구성은 투자자의 성향과 목표에 따라 달라집니다. 일반적으로 주식 60%, 채권 30%, 현금 10%의 비율로 시작하는 것을 추천합니다. 먼저 투자 설문을 완료하시면 더 정확한 포트폴리오를 제안해드릴 수 있습니다.';
+            } else if (userMessage.includes('리스크')) {
+                response = '리스크 관리는 성공적인 투자의 핵심입니다. 분산 투자, 손절선 설정, 정기적인 리밸런싱 등의 방법이 있습니다. 특히 한 종목에 전체 투자금의 10% 이상을 투자하지 않는 것이 중요합니다.';
+            } else if (userMessage.includes('시장 분석')) {
+                response = '현재 시장은 변동성이 높은 상황입니다. 미국 금리 인상 우려와 중국 경제 둔화 등이 주요 변수로 작용하고 있습니다. 안정적인 대형주 중심의 투자를 추천드립니다.';
+            } else if (userMessage.includes('추천')) {
+                response = '투자 종목 추천을 위해서는 먼저 투자 성향 분석이 필요합니다. 설문을 완료하시면 AI가 분석한 맞춤형 종목을 추천해드릴 수 있습니다.';
+            } else {
+                response = '좋은 질문입니다! 실제 서비스에서는 AI가 실시간 데이터를 분석하여 더 정확한 답변을 제공합니다. 지금은 데모 버전이므로 기본적인 응답만 가능합니다.';
+            }
+            
+            addMessage(response, 'ai');
+            isTyping = false;
+        }, 1500);
+    }
+
+    function showDemoResults(event) {
+        if (event) event.preventDefault();
+        
+        let resultMessage = '<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">';
+        resultMessage += '<h3 style="color: #1454FE; margin-bottom: 20px;">📊 투자 성향 분석 결과 (데모)</h3>';
+        
+        resultMessage += '<div style="margin-bottom: 15px;">';
+        resultMessage += '<h4 style="color: #333; margin-bottom: 5px;">투자 성향</h4>';
+        resultMessage += '<p style="color: #666;">귀하의 투자 성향은 <strong>위험중립형</strong>입니다. 안정성과 수익성의 균형을 추구하는 투자자입니다.</p>';
+        resultMessage += '</div>';
+        
+        resultMessage += '<div style="margin-bottom: 15px;">';
+        resultMessage += '<h4 style="color: #333; margin-bottom: 5px;">추천 포트폴리오</h4>';
+        resultMessage += '<ul style="color: #666;">';
+        resultMessage += '<li>대형 우량주: 50%</li>';
+        resultMessage += '<li>성장주: 30%</li>';
+        resultMessage += '<li>채권/안정자산: 20%</li>';
+        resultMessage += '</ul>';
+        resultMessage += '</div>';
+        
+        resultMessage += '<div style="background: #e7f0ff; padding: 15px; border-radius: 8px;">';
+        resultMessage += '<p style="color: #333; margin: 0;">실제 서비스에서는 10개의 심층 질문을 통해 더 정확한 분석 결과를 제공합니다.</p>';
+        resultMessage += '</div>';
+        
+        resultMessage += '</div>';
+        
+        addMessage(resultMessage, 'ai');
+    }
+
+    // 시장 분석 요청 함수 (데모)
+    function requestMarketAnalysis() {
+        const marketAnalysisBtn = document.getElementById('marketAnalysisBtn');
+        if (marketAnalysisBtn) {
+            marketAnalysisBtn.disabled = true;
+            marketAnalysisBtn.innerHTML = '<span style="font-size: 20px;">⏳</span> 시장 분석 중...';
+        }
+        
+        // 사용자 메시지 추가
+        addMessage('[실시간 시장 분석 요청] 최신 뉴스 감정 분석을 기반으로 현재 시장 상황을 분석해주세요', 'user');
+        
+        // 데모 응답
+        setTimeout(() => {
+            const demoAnalysis = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #1454FE; margin-bottom: 15px;">📊 실시간 시장 분석 (데모)</h4>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <h5 style="color: #333; margin-bottom: 8px;">시장 심리 지수</h5>
+                        <div style="background: #e7f0ff; padding: 10px; border-radius: 5px;">
+                            <strong>중립적 (50/100)</strong> - 투자자들의 관망세가 지속되고 있습니다.
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <h5 style="color: #333; margin-bottom: 8px;">주요 이슈</h5>
+                        <ul style="color: #666; margin: 0;">
+                            <li>미국 연준의 금리 정책 불확실성</li>
+                            <li>기술주 실적 발표 주목</li>
+                            <li>중국 경제 지표 개선 기대</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fffbf0; padding: 10px; border-radius: 5px; border: 1px solid #ffd6a5;">
+                        <p style="color: #666; margin: 0; font-size: 14px;">
+                            <strong>참고:</strong> 실제 서비스에서는 AI가 실시간 뉴스를 분석하여 더 정확한 시장 동향을 제공합니다.
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(demoAnalysis, 'ai');
+            
+            // 버튼 상태 복원
+            if (marketAnalysisBtn) {
+                setTimeout(() => {
+                    marketAnalysisBtn.disabled = false;
+                    marketAnalysisBtn.innerHTML = '<span style="font-size: 20px;">📊</span> 실시간 시장 분석 (AI 뉴스 분석 기반)';
+                }, 3000);
+            }
+        }, 2000);
+    }
+    </script>
+</body>
+</html>
