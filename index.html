@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixie - AI 투자 어드바이저</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <style>
+        :root {
+            --pixie-primary: #1454FE;
+            --pixie-primary-dark: #0B3DCF;
+            --pixie-secondary: #5E97F4;
+            --pixie-dark: #2F2E41;
+            --pixie-dark-light: #3F3D56;
+            --pixie-gray: #474747;
+            --pixie-light-gray: #F5F5F5;
+            --pixie-white: #FFFFFF;
+            --pixie-black: #000000;
+            --pixie-green: #22C55E;
+            --pixie-text-muted: #8F8F8F;
+            --pixie-gradient: linear-gradient(90deg, #5E97F4 0%, #3B7AFF 100%);
+            --pixie-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+            --pixie-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--pixie-black);
+            background: var(--pixie-white);
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        .pixie-navbar {
+            background: var(--pixie-white);
+            box-shadow: var(--pixie-shadow);
+            padding: 36px 134px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .pixie-nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-menu {
+            display: flex;
+            gap: 100px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pixie-nav-item {
+            text-align: center;
+            color: var(--pixie-black);
+            font-size: 24px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .pixie-nav-item:hover {
+            color: var(--pixie-primary);
+        }
+
+        .pixie-nav-icons {
+            display: flex;
+            gap: 43px;
+            align-items: center;
+        }
+
+        /* 히어로 섹션 */
+        .pixie-hero {
+            padding: 100px 134px;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--pixie-light-gray) 0%, var(--pixie-white) 100%);
+        }
+
+        .pixie-hero-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 100px;
+        }
+
+        .pixie-hero-text {
+            flex: 1;
+        }
+
+        .pixie-hero h1 {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            color: var(--pixie-black);
+        }
+
+        .pixie-hero h1 span {
+            color: var(--pixie-primary);
+        }
+
+        .pixie-hero p {
+            font-size: 24px;
+            color: var(--pixie-gray);
+            margin-bottom: 40px;
+        }
+
+        .pixie-btn {
+            display: inline-block;
+            padding: 20px 50px;
+            background: var(--pixie-primary);
+            color: var(--pixie-white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pixie-btn:hover {
+            background: var(--pixie-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        .pixie-hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .pixie-hero-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 서비스 섹션 */
+        .pixie-services {
+            padding: 100px 134px;
+            background: var(--pixie-white);
+        }
+
+        .pixie-section-title {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--pixie-black);
+        }
+
+        .pixie-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-service-card {
+            background: var(--pixie-white);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--pixie-shadow);
+        }
+
+        .pixie-service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        .pixie-service-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: var(--pixie-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--pixie-white);
+        }
+
+        .pixie-service-card h3 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--pixie-black);
+        }
+
+        .pixie-service-card p {
+            font-size: 18px;
+            color: var(--pixie-gray);
+            line-height: 1.6;
+        }
+
+        /* 특징 섹션 */
+        .pixie-features {
+            padding: 100px 134px;
+            background: var(--pixie-light-gray);
+        }
+
+        .pixie-features-content {
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .pixie-feature-row {
+            display: flex;
+            align-items: center;
+            gap: 100px;
+            margin-bottom: 100px;
+        }
+
+        .pixie-feature-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .pixie-feature-text {
+            flex: 1;
+        }
+
+        .pixie-feature-text h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--pixie-black);
+        }
+
+        .pixie-feature-text p {
+            font-size: 20px;
+            color: var(--pixie-gray);
+            line-height: 1.8;
+        }
+
+        .pixie-feature-image {
+            flex: 1;
+        }
+
+        .pixie-feature-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: var(--pixie-shadow-lg);
+        }
+
+        /* CTA 섹션 */
+        .pixie-cta {
+            padding: 100px 134px;
+            background: var(--pixie-gradient);
+            text-align: center;
+        }
+
+        .pixie-cta h2 {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--pixie-white);
+            margin-bottom: 20px;
+        }
+
+        .pixie-cta p {
+            font-size: 24px;
+            color: var(--pixie-white);
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .pixie-btn-light {
+            background: var(--pixie-white);
+            color: var(--pixie-primary);
+        }
+
+        .pixie-btn-light:hover {
+            background: var(--pixie-light-gray);
+        }
+
+        /* 푸터 */
+        .pixie-footer {
+            padding: 60px 134px;
+            background: var(--pixie-dark);
+            color: var(--pixie-white);
+        }
+
+        .pixie-footer-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pixie-footer-section h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .pixie-footer-section p,
+        .pixie-footer-section a {
+            color: var(--pixie-text-muted);
+            text-decoration: none;
+            font-size: 16px;
+            line-height: 2;
+        }
+
+        .pixie-footer-section a:hover {
+            color: var(--pixie-white);
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .pixie-navbar {
+                padding: 20px;
+            }
+
+            .pixie-nav-menu {
+                display: none;
+            }
+
+            .pixie-hero {
+                padding: 60px 20px;
+            }
+
+            .pixie-hero h1 {
+                font-size: 36px;
+            }
+
+            .pixie-hero-content {
+                flex-direction: column;
+            }
+
+            .pixie-services,
+            .pixie-features,
+            .pixie-cta {
+                padding: 60px 20px;
+            }
+
+            .pixie-feature-row,
+            .pixie-feature-row:nth-child(even) {
+                flex-direction: column;
+            }
+
+            .pixie-footer {
+                padding: 40px 20px;
+            }
+
+            .pixie-footer-content {
+                flex-direction: column;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="pixie-navbar">
+        <div class="pixie-nav-content">
+            <a href="#" class="pixie-logo">
+                Pixie
+            </a>
+            <ul class="pixie-nav-menu">
+                <li><a href="#services" class="pixie-nav-item">서비스</a></li>
+                <li><a href="#features" class="pixie-nav-item">특징</a></li>
+                <li><a href="#about" class="pixie-nav-item">소개</a></li>
+                <li><a href="#contact" class="pixie-nav-item">문의</a></li>
+            </ul>
+            <div class="pixie-nav-icons">
+                <a href="#" class="pixie-btn">시작하기</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 히어로 섹션 -->
+    <section class="pixie-hero">
+        <div class="pixie-hero-content">
+            <div class="pixie-hero-text">
+                <h1>
+                    AI와 함께하는<br>
+                    <span>스마트한 투자</span>
+                </h1>
+                <p>
+                    개인 맞춤형 AI 투자 자문 서비스로<br>
+                    더 나은 투자 결정을 내리세요
+                </p>
+                <a href="#cta" class="pixie-btn">무료로 시작하기</a>
+            </div>
+            <div class="pixie-hero-image">
+                <img src="capture/스크린샷 2025-07-23 033502.png" alt="Pixie Dashboard">
+            </div>
+        </div>
+    </section>
+
+    <!-- 서비스 섹션 -->
+    <section id="services" class="pixie-services">
+        <h2 class="pixie-section-title">주요 서비스</h2>
+        <div class="pixie-services-grid">
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">📊</div>
+                <h3>투자 성향 분석</h3>
+                <p>AI가 당신의 투자 성향을 분석하여 맞춤형 포트폴리오를 제안합니다</p>
+            </div>
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">🤖</div>
+                <h3>AI 투자 자문</h3>
+                <p>Claude AI 기반 대화형 투자 상담으로 실시간 조언을 받으세요</p>
+            </div>
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">📈</div>
+                <h3>실시간 시장 분석</h3>
+                <p>뉴스 감성 분석과 기술적 지표로 시장 동향을 파악하세요</p>
+            </div>
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">🎯</div>
+                <h3>포트폴리오 최적화</h3>
+                <p>리스크와 수익을 고려한 최적의 포트폴리오를 구성합니다</p>
+            </div>
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">📚</div>
+                <h3>투자 학습</h3>
+                <p>초보자도 쉽게 이해할 수 있는 투자 교육 콘텐츠를 제공합니다</p>
+            </div>
+            <div class="pixie-service-card">
+                <div class="pixie-service-icon">🔔</div>
+                <h3>알림 서비스</h3>
+                <p>중요한 시장 변화와 투자 기회를 실시간으로 알려드립니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 특징 섹션 -->
+    <section id="features" class="pixie-features">
+        <div class="pixie-features-content">
+            <h2 class="pixie-section-title">왜 Pixie인가?</h2>
+            
+            <div class="pixie-feature-row">
+                <div class="pixie-feature-text">
+                    <h3>개인 맞춤형 투자 전략</h3>
+                    <p>
+                        당신의 투자 성향, 목표, 리스크 허용도를 분석하여
+                        완벽하게 맞춤화된 투자 전략을 제공합니다.
+                        AI가 지속적으로 학습하며 전략을 개선합니다.
+                    </p>
+                </div>
+                <div class="pixie-feature-image">
+                    <img src="capture/투자 설문 결과.png" alt="투자 성향 분석">
+                </div>
+            </div>
+
+            <div class="pixie-feature-row">
+                <div class="pixie-feature-text">
+                    <h3>실시간 AI 투자 조언</h3>
+                    <p>
+                        24시간 언제든지 AI 투자 전문가와 대화하세요.
+                        시장 상황, 포트폴리오 분석, 투자 전략까지
+                        모든 질문에 즉시 답변을 받을 수 있습니다.
+                    </p>
+                </div>
+                <div class="pixie-feature-image">
+                    <img src="capture/스크린샷 2025-07-23 140541.png" alt="AI 챗봇">
+                </div>
+            </div>
+
+            <div class="pixie-feature-row">
+                <div class="pixie-feature-text">
+                    <h3>데이터 기반 의사결정</h3>
+                    <p>
+                        빅데이터와 머신러닝을 활용한 정확한 시장 예측.
+                        감성 분석, 기술적 지표, 재무 데이터를 종합하여
+                        과학적인 투자 결정을 내릴 수 있습니다.
+                    </p>
+                </div>
+                <div class="pixie-feature-image">
+                    <img src="capture/2.png" alt="데이터 분석">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section id="cta" class="pixie-cta">
+        <h2>지금 바로 시작하세요</h2>
+        <p>AI와 함께 더 스마트한 투자를 경험해보세요</p>
+        <a href="https://github.com/ll3i/pixie-invest-ai" class="pixie-btn pixie-btn-light">
+            GitHub에서 보기
+        </a>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="pixie-footer">
+        <div class="pixie-footer-content">
+            <div class="pixie-footer-section">
+                <h4>Pixie</h4>
+                <p>AI 기반 투자 자문 서비스</p>
+                <p>© 2025 Pixie. All rights reserved.</p>
+            </div>
+            <div class="pixie-footer-section">
+                <h4>링크</h4>
+                <a href="https://github.com/ll3i/pixie-invest-ai">GitHub</a><br>
+                <a href="#services">서비스</a><br>
+                <a href="#features">특징</a>
+            </div>
+            <div class="pixie-footer-section">
+                <h4>문의</h4>
+                <p>프로젝트 관련 문의는</p>
+                <a href="https://github.com/ll3i/pixie-invest-ai/issues">
+                    GitHub Issues
+                </a>
+                <p>페이지를 이용해주세요</p>
+            </div>
+            <div class="pixie-footer-section">
+                <h4>주의사항</h4>
+                <p>투자 결정에 대한 책임은</p>
+                <p>투자자 본인에게 있습니다</p>
+                <p>신중한 투자 결정 바랍니다</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
